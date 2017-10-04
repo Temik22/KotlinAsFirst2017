@@ -4,6 +4,16 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 
+fun NOD(x: Int, y: Int): Int {
+    var a = x
+    var b = y
+    while (a != 0 && b != 0) {
+        if (a > b) a %= b
+        else b %= a
+    }
+    return a + b
+}
+
 /**
  * Пример
  *
@@ -103,7 +113,8 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int = n * m / NOD(m, n)
+
 
 /**
  * Простая
@@ -127,8 +138,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var max = n - 1
-    for (i in n - 1 downTo 1) {
+    var max = 1
+    for (i in n - 1 downTo 2) {
         if (n % i == 0) {
             max = i
             break
@@ -144,7 +155,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean = (NOD(m, n) == 1)
 
 /**
  * Простая
@@ -202,7 +213,7 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean = (n == revert(n))
 
 /**
  * Средняя
@@ -210,7 +221,10 @@ fun isPalindrome(n: Int): Boolean = TODO()
  * Для заданного числа n определить, содержит ли оно различающиеся цифры.
  * Например, 54 и 323 состоят из разных цифр, а 111 и 0 из одинаковых.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val x = n % 10
+    return (digitNumber(n) != digitCountInNumber(n, x))
+}
 
 /**
  * Сложная
