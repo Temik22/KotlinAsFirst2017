@@ -5,6 +5,8 @@ package lesson3.task1
 import lesson1.task1.sqr
 
 /**
+ * Вспомогательная
+ *
  * Наибольший Общий Делитель
  */
 fun NOD(x: Int, y: Int): Int {
