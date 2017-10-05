@@ -4,6 +4,9 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 
+/**
+ * Наибольший Общий Делитель
+ */
 fun NOD(x: Int, y: Int): Int {
     var a = x
     var b = y
@@ -123,7 +126,7 @@ fun lcm(m: Int, n: Int): Int = n * m / NOD(m, n)
  */
 fun minDivisor(n: Int): Int {
     var min = n
-    for (i in 2..n - 1) {
+    for (i in 2..n / 2) {
         if (n % i == 0) {
             min = i
             break
@@ -139,7 +142,7 @@ fun minDivisor(n: Int): Int {
  */
 fun maxDivisor(n: Int): Int {
     var max = 1
-    for (i in n - 1 downTo 2) {
+    for (i in n / 2 downTo 2) {
         if (n % i == 0) {
             max = i
             break
@@ -165,8 +168,8 @@ fun isCoPrime(m: Int, n: Int): Boolean = (NOD(m, n) == 1)
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (i in 0..n) {
-        if (i <= Math.sqrt(n.toDouble()) && i >= Math.sqrt(m.toDouble()))
+    for (i in 1..Math.sqrt(n.toDouble()).toInt()) {
+        if (i * i in m..n)
             return true
     }
     return false
@@ -197,13 +200,13 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Не использовать строки при решении задачи.
  */
 fun revert(n: Int): Int {
-    var x = 0
-    var s = n
-    while (s != 0) {
-        x = x * 10 + s % 10
-        s /= 10
+    var rev = 0
+    var x = n
+    while (x != 0) {
+        rev = rev * 10 + x % 10
+        x /= 10
     }
-    return x
+    return rev
 }
 
 /**
@@ -233,7 +236,23 @@ fun hasDifferentDigits(n: Int): Boolean {
  * 149162536496481100121144...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var length = 0
+    var count = 1
+    var string = 0
+    while (length < n) {
+        string = count * count
+        length += digitNumber(string)
+        count++
+    }
+    if (length > n) {
+        while (length != n) {
+            string /= 10
+            length--
+        }
+    }
+    return string % 10
+}
 
 /**
  * Сложная
@@ -242,4 +261,20 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  * 1123581321345589144...
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var length = 0
+    var count = 1
+    var string = 0
+    while (length < n) {
+        string = fib(count)
+        length += digitNumber(string)
+        count++
+    }
+    if (length > n) {
+        while (length != n) {
+            string /= 10
+            length--
+        }
+    }
+    return string % 10
+}
