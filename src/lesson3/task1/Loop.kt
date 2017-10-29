@@ -3,6 +3,7 @@
 package lesson3.task1
 
 import lesson1.task1.sqr
+import lesson7.task2.generateSpiral
 
 /**
  * Вспомогательная
@@ -99,12 +100,12 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    val fi = (1+ Math.sqrt(5.00))/2
-    val answer :Int
-    if (n<=2) {
+    val fi = (1 + Math.sqrt(5.00)) / 2
+    val answer: Int
+    if (n <= 2) {
         return 1
     }
-    answer = ((Math.pow(fi,n.toDouble())-Math.pow(-fi,-n.toDouble()))/(2*fi-1)).toInt()
+    answer = ((Math.pow(fi, n.toDouble()) - Math.pow(-fi, -n.toDouble())) / (2 * fi - 1)).toInt()
     return answer
 }
 
@@ -177,7 +178,23 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var counter = 0
+    var sin = 0.0
+    var argument = x % (Math.PI * 2)
+    var level = 1.0
+    var sequence = x
+    while (Math.abs(sequence) > eps) {
+        sequence = Math.pow(argument, level) / factorial(level.toInt())
+        level += 2
+        if (counter % 2 == 0)
+            sin += sequence
+        else
+            sin -= sequence
+        counter++
+    }
+    return sin
+}
 
 /**
  * Средняя
@@ -186,7 +203,7 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double = sin(Math.PI/2 + x, eps)
 
 /**
  * Средняя
