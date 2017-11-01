@@ -363,6 +363,45 @@ fun roman(n: Int): String {
     return answer
 }
 
+/**
+ * Вспомогательная
+ *
+ * Переводит Int в строку
+ */
+fun inttorussian(x: Int, code: Int): String {
+    val answer = mutableListOf<String>()
+    val hundred = x / 100
+    val ten = (x % 100) / 10
+    val one = x % 10
+    val list100 = listOf<String>("", "сто", "двести", "триста", "четыреста",
+            "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
+    val list15 = listOf<String>("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+            "пятнадцать", "шеснадцать", "семнадцать", "восемнадцать", "девятнадцать")
+    val list50 = listOf<String>("", "", "двадцать", "тридцать", "сорок", "пятьдесят",
+            "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
+    val list1 = listOf<String>("", "один", "два", "три", "четыре", "пять", "шесть", "семь",
+            "восемь", "девять")
+    val list1alternative = listOf<String>( "", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи",
+            "пять тысяч", "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч")
+    if (hundred != 0) answer += list100[hundred]
+    if (code == 2 && ten + one == 0 && hundred != 0) {
+        answer += "тысяч"
+        return answer.joinToString(separator = " ")
+    }
+    if (ten == 1) {
+        answer += list15[one]
+        if (code == 2) answer += "тысяч"
+        return answer.joinToString(separator = " ")
+    } else {
+        if (ten in 2..9) answer += list50[ten]
+        when (code == 2 && one != 0) {
+            true -> answer += list1alternative[one]
+            false -> answer += list1[one]
+        }
+        return answer.joinToString(separator = " ")
+    }
+
+}
 
 /**
  * Очень сложная
@@ -371,4 +410,13 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val thousand = n / 1000
+    val one = n % 1000
+    when (inttorussian(thousand, 2) == "" || inttorussian(one, 1) == "") {
+        true -> return inttorussian(thousand, 2) + inttorussian(one, 1)
+        false -> return inttorussian(thousand, 2) + " " + inttorussian(one, 1)
+    }
+}
+
+
