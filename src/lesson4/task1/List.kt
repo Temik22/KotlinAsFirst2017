@@ -108,10 +108,10 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double =
-    when (v.isEmpty()){
-        true -> 0.0
-        false -> Math.sqrt(v.map { it * it }.sum())
-    }
+        when (v.isEmpty()) {
+            true -> 0.0
+            false -> Math.sqrt(v.map { it * it }.sum())
+        }
 
 
 /**
@@ -150,7 +150,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
-fun times(a: List<Double>, b: List<Double>): Double = when{
+fun times(a: List<Double>, b: List<Double>): Double = when {
     a.isEmpty() || b.isEmpty() -> 0.0
     else -> {
         var sum = 0.0
@@ -168,13 +168,13 @@ fun times(a: List<Double>, b: List<Double>): Double = when{
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0.0 при любом x.
  */
-fun polynom(p: List<Double>, x: Double): Double = when{
+fun polynom(p: List<Double>, x: Double): Double = when {
     p.isEmpty() -> 0.0
     else -> {
         var sum = 0.0
-        for(i in 0..p.lastIndex)
-            sum += p[i] * Math.pow(x,i.toDouble())
-            sum
+        for (i in 0..p.lastIndex)
+            sum += p[i] * Math.pow(x, i.toDouble())
+        sum
     }
 }
 
@@ -188,11 +188,11 @@ fun polynom(p: List<Double>, x: Double): Double = when{
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Double>): MutableList<Double> = when{
+fun accumulate(list: MutableList<Double>): MutableList<Double> = when {
     list.isEmpty() -> list
     else -> {
         var sum = list[0]
-        for (i in 1..list.lastIndex){
+        for (i in 1..list.lastIndex) {
             val temporary = list[i]
             list[i] += sum
             sum += temporary
@@ -211,13 +211,12 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> = when{
 fun factorize(n: Int): List<Int> {
     var divisor = 2
     var x = n
-    var list = mutableListOf<Int>()
-    while (x>1) {
-        if ( x % divisor == 0) {
+    val list = mutableListOf<Int>()
+    while (x > 1) {
+        if (x % divisor == 0) {
             x /= divisor
             list.add(divisor)
-        }
-        else divisor++
+        } else divisor++
     }
     return list
 }
@@ -228,7 +227,7 @@ fun factorize(n: Int): List<Int> {
  * Разложить заданное натуральное число n > 1 на простые множители.
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  */
-fun factorizeToString(n: Int): String = factorize(n).joinToString ( separator ="*" )
+fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
 
 /**
  * Средняя
@@ -241,12 +240,16 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString ( separator ="
  */
 fun convert(n: Int, base: Int): List<Int> {
     var x = n
-    var answer = mutableListOf<Int>()
-    while (x >0) {
-        answer.add (x % base)
-        x /= base
+    if (x == 0) return listOf(0)
+    else {
+        val answer = mutableListOf<Int>()
+
+        while (x > 0) {
+            answer.add(x % base)
+            x /= base
+        }
+        return answer.reversed()
     }
-    return answer.reversed()
 }
 
 /**
@@ -258,14 +261,17 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    val list = convert(n, base)
-    val alfabet = "abcdefghijklmnopqrstuvwxyz"
-    var answer = ""
-    for (i in 0..list.lastIndex) {
-        answer += if (list[i] < 10) list[i]
-        else alfabet[list[i] - 10]
+    if (n == 0) return "0"
+    else {
+        val list = convert(n, base)
+        val alfabet = "abcdefghijklmnopqrstuvwxyz"
+        var answer = ""
+        for (i in 0..list.lastIndex) {
+            answer += if (list[i] < 10) list[i]
+            else alfabet[list[i] - 10]
+        }
+        return answer
     }
-    return answer
 }
 
 /**
@@ -277,8 +283,8 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var x = 0
-    var answer = digits.reversed()
-    for (i in 0.. answer.lastIndex)
+    val answer = digits.reversed()
+    for (i in 0..answer.lastIndex)
         x += answer[i] * Math.pow(base.toDouble(), i.toDouble()).toInt()
     return x
 }
@@ -292,7 +298,48 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: str = "13c", base = 14 -> 250
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    if (str.isEmpty() || str == "0") return 0
+    var answer = 0
+    val variants = "0123456789abcdefghijklmnopqrstuvwxyz"
+    for (i in str.lastIndex downTo 0) {
+        answer += variants.indexOf(str[i]) *
+                Math.pow(base.toDouble(), str.lastIndex - i.toDouble()).toInt()
+    }
+    return answer
+}
+
+/**
+ * Вспомогательная
+ *
+ * Получая на ввод, например, (I, V, X, 4), она выводит строку "IV"
+ *
+ */
+fun digittoroman(a: String, b: String, c: String, n: Int): String {
+    var answer = ""
+    when {
+        n in 1..3 ->
+            for (i in 1..n)
+                answer += a
+
+        n == 5 -> answer += b
+
+        n in 6..8 -> {
+            answer += b
+            for (i in 6..n)
+                answer += a
+        }
+        n == 4 -> {
+            answer += a
+            answer += b
+        }
+        n == 9 -> {
+            answer += a
+            answer += c
+        }
+    }
+    return answer
+}
 
 /**
  * Сложная
@@ -302,7 +349,20 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var answer = ""
+    val one = n % 10
+    val ten = (n % 100) / 10
+    val hundred = (n % 1000) / 100
+    for (i in 1..n / 1000) {
+        answer += "M"
+    }
+    answer += digittoroman("C", "D", "M", hundred)
+    answer += digittoroman("X", "L", "C", ten)
+    answer += digittoroman("I", "V", "X", one)
+    return answer
+}
+
 
 /**
  * Очень сложная
