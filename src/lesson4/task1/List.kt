@@ -400,8 +400,6 @@ fun inttorussian(x: Int, code: Int): String {
         return answer.joinToString(separator = " ")
     }
 
-
-
 /**
  * Очень сложная
  *
