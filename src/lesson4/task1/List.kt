@@ -394,6 +394,7 @@ fun inttorussian(x: Int, code: Int): String {
         return answer.joinToString(separator = " ")
     } else {
         if (ten in 2..9) answer += list50[ten]
+        if (code == 2 && one == 0) answer += "тысяч"
         if (code == 2 && one != 0)answer += list1alternative[one]
                 else if(one != 0) answer += list1[one]
         }
