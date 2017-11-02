@@ -381,7 +381,7 @@ fun inttorussian(x: Int, code: Int): String {
             "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
     val list1 = listOf<String>("", "один", "два", "три", "четыре", "пять", "шесть", "семь",
             "восемь", "девять")
-    val list1alternative = listOf<String>( "", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи",
+    val list1alternative = listOf<String>("", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи",
             "пять тысяч", "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч")
     if (hundred != 0) answer += list100[hundred]
     if (code == 2 && ten + one == 0 && hundred != 0) {
@@ -393,13 +393,15 @@ fun inttorussian(x: Int, code: Int): String {
         if (code == 2) answer += "тысяч"
         return answer.joinToString(separator = " ")
     } else {
-        if (ten in 2..9) answer += list50[ten]
-        if (code == 2 && one == 0) answer += "тысяч"
-        if (code == 2 && one != 0)answer += list1alternative[one]
-                else if(one != 0) answer += list1[one]
+        if (ten in 2..9) {
+            answer += list50[ten]
+            if (code == 2 && one == 0) answer += "тысяч"
         }
-        return answer.joinToString(separator = " ")
+        if (code == 2 && one != 0) answer += list1alternative[one]
+        else if (one != 0) answer += list1[one]
     }
+    return answer.joinToString(separator = " ")
+}
 
 /**
  * Очень сложная
