@@ -2,8 +2,7 @@
 
 package lesson3.task1
 
-import lesson1.task1.sqr
-import lesson7.task2.generateSpiral
+import java.lang.Math.*
 
 /**
  * Вспомогательная
@@ -40,7 +39,7 @@ fun factorial(n: Int): Double {
  */
 fun isPrime(n: Int): Boolean {
     if (n < 2) return false
-    for (m in 2..Math.sqrt(n.toDouble()).toInt()) {
+    for (m in 2..sqrt(n.toDouble()).toInt()) {
         if (n % m == 0) return false
     }
     return true
@@ -81,7 +80,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var number = Math.abs(n)
+    var number = abs(n)
     if (n == 0) {
         return 1
     } else {
@@ -100,12 +99,12 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    val fi = (1 + Math.sqrt(5.00)) / 2
+    val fi = (1 + sqrt(5.00)) / 2
     val answer: Int
     if (n <= 2) {
         return 1
     }
-    answer = ((Math.pow(fi, n.toDouble()) - Math.pow(-fi, -n.toDouble())) / (2 * fi - 1)).toInt()
+    answer = ((pow(fi, n.toDouble()) - pow(-fi, -n.toDouble())) / (2 * fi - 1)).toInt()
     return answer
 }
 
@@ -157,7 +156,7 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = (NOD(m, n) == 1)
+fun isCoPrime(m: Int, n: Int): Boolean = NOD(m, n) == 1
 
 /**
  * Простая
@@ -167,7 +166,7 @@ fun isCoPrime(m: Int, n: Int): Boolean = (NOD(m, n) == 1)
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    val k = (Math.sqrt(n.toDouble())).toInt()
+    val k = floor(sqrt(n.toDouble()))
     return k * k >= m
 }
 
@@ -181,11 +180,11 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
 fun sin(x: Double, eps: Double): Double {
     var counter = 0
     var sin = 0.0
-    var argument = x % (Math.PI * 2)
+    val argument = x % (PI * 2)
     var level = 1.0
     var sequence = x
-    while (Math.abs(sequence) > eps) {
-        sequence = Math.pow(argument, level) / factorial(level.toInt())
+    while (abs(sequence) > eps) {
+        sequence = pow(argument, level) / factorial(level.toInt())
         level += 2
         if (counter % 2 == 0)
             sin += sequence
@@ -203,7 +202,7 @@ fun sin(x: Double, eps: Double): Double {
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = sin(Math.PI/2 + x, eps)
+fun cos(x: Double, eps: Double): Double = sin(PI/2 + x, eps)
 
 /**
  * Средняя
