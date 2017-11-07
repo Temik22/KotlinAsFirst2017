@@ -350,42 +350,36 @@ fun roman(n: Int): String {
 /**
  * Вспомогательная
  *
- * Переводит Int в строку
+ * Переводит Int в лист
  */
-fun intToRussian(x: Int, code: Int): String {
+fun intToRussian(x: Int, code: Int): MutableList<String> {
     val answer = mutableListOf<String>()
     val hundred = x / 100
     val ten = (x % 100) / 10
     val one = x % 10
-    val list100 = listOf<String>("", "сто", "двести", "триста", "четыреста",
+    val list100 = listOf("*", "сто", "двести", "триста", "четыреста",
             "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
-    val list15 = listOf<String>("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+    val list15 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
             "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
-    val list50 = listOf<String>("", "", "двадцать", "тридцать", "сорок", "пятьдесят",
+    val list50 = listOf("*", "*", "двадцать", "тридцать", "сорок", "пятьдесят",
             "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
-    val list1 = listOf<String>("", "один", "два", "три", "четыре", "пять", "шесть", "семь",
+    val list1 = listOf("*", "один", "два", "три", "четыре", "пять", "шесть", "семь",
             "восемь", "девять")
-    val list1alternative = listOf<String>("", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи",
+    val list1alternative = listOf("тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи",
             "пять тысяч", "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч")
-    if (hundred != 0) answer += list100[hundred]
-    if (code == 2 && ten + one == 0 && hundred != 0) {
-        answer += "тысяч"
-        return answer.joinToString(separator = " ")
-    }
+    answer.add(list100[hundred])
     if (ten == 1) {
-        answer += list15[one]
-        if (code == 2) answer += "тысяч"
-        return answer.joinToString(separator = " ")
+        answer.add(list15[one])
+        if (code == 2) answer.add(list1alternative[0])
     } else {
-        if (ten in 2..9) {
-            answer += list50[ten]
-            if (code == 2 && one == 0) answer += "тысяч"
-        }
-        if (code == 2 && one != 0) answer += list1alternative[one]
-        else if (one != 0) answer += list1[one]
+        answer.add(list50[ten])
+        if (code == 1) answer.add(list1[one])
+        else if (hundred != 0 || ten != 0) answer.add(list1alternative[one])
+        else if (one != 0) answer.add(list1alternative[one])
     }
-    return answer.joinToString(separator = " ")
+    return answer
 }
+
 
 /**
  * Очень сложная
@@ -397,10 +391,9 @@ fun intToRussian(x: Int, code: Int): String {
 fun russian(n: Int): String {
     val thousand = n / 1000
     val one = n % 1000
-    when (intToRussian(thousand, 2) == "" || intToRussian(one, 1) == "") {
-        true -> return intToRussian(thousand, 2) + intToRussian(one, 1)
-        false -> return intToRussian(thousand, 2) + " " + intToRussian(one, 1)
-    }
+    val answer = (intToRussian(thousand, 2) + intToRussian(one, 1)).filter { it != "*" }
+    return answer.joinToString(separator = " ")
 }
+
 
 
