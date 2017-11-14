@@ -177,17 +177,14 @@ fun polynom(p: List<Double>, x: Double): Double {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Double>): MutableList<Double> = when {
-    list.isEmpty() -> list
-    else -> {
-        var sum = list[0]
-        for (i in 1..list.lastIndex) {
-            val temporary = list[i]
-            list[i] += sum
-            sum += temporary
-        }
-        list
+fun accumulate(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    var sum = list[0]
+    for(i in 1..list.lastIndex){
+        sum += list[i]
+        list[i] = sum
     }
+    return list
 }
 
 /**
@@ -299,27 +296,27 @@ fun decimalFromString(str: String, base: Int): Int {
  * Получая на ввод, например, (I, V, X, 4), она выводит строку "IV"
  *
  */
-fun digitToRoman(a: String, b: String, c: String, n: Int): String {
+fun digitToRoman(first: String, second: String, third: String, n: Int): String {
     val answer = StringBuilder("")
     when {
         n in 1..3 ->
             for (i in 1..n)
-                answer.append(a)
+                answer.append(first)
 
-        n == 5 -> answer.append(b)
+        n == 5 -> answer.append(second)
 
         n in 6..8 -> {
-            answer.append(b)
+            answer.append(second)
             for (i in 6..n)
-                answer.append(a)
+                answer.append(first)
         }
         n == 4 -> {
-            answer.append(a)
-            answer.append(b)
+            answer.append(first)
+            answer.append(second)
         }
         n == 9 -> {
-            answer.append(a)
-            answer.append(c)
+            answer.append(first)
+            answer.append(third)
         }
     }
     return answer.toString()
@@ -350,20 +347,20 @@ fun roman(n: Int): String {
 /**
  * Вспомогательная
  *
- * Переводит Int в лист
+ * Переводит Int в лист, при этом от code зависит единицы это или тысячи.
  */
-fun intToRussian(x: Int, code: Int): MutableList<String> {
+fun intToRussian(input: Int, code: Int): MutableList<String> {
     val answer = mutableListOf<String>()
-    val hundred = x / 100
-    val ten = (x % 100) / 10
-    val one = x % 10
-    val list100 = listOf("*", "сто", "двести", "триста", "четыреста",
+    val hundred = input / 100
+    val ten = (input % 100) / 10
+    val one = input % 10
+    val list100 = listOf("", "сто", "двести", "триста", "четыреста",
             "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот")
     val list15 = listOf("десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
             "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать")
-    val list50 = listOf("*", "*", "двадцать", "тридцать", "сорок", "пятьдесят",
+    val list50 = listOf("", "", "двадцать", "тридцать", "сорок", "пятьдесят",
             "шестьдесят", "семьдесят", "восемьдесят", "девяносто")
-    val list1 = listOf("*", "один", "два", "три", "четыре", "пять", "шесть", "семь",
+    val list1 = listOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь",
             "восемь", "девять")
     val list1alternative = listOf("тысяч", "одна тысяча", "две тысячи", "три тысячи", "четыре тысячи",
             "пять тысяч", "шесть тысяч", "семь тысяч", "восемь тысяч", "девять тысяч")
@@ -374,8 +371,7 @@ fun intToRussian(x: Int, code: Int): MutableList<String> {
     } else {
         answer.add(list50[ten])
         if (code == 1) answer.add(list1[one])
-        else if (hundred != 0 || ten != 0) answer.add(list1alternative[one])
-        else if (one != 0) answer.add(list1alternative[one])
+        else if (input != 0) answer.add(list1alternative[one])
     }
     return answer
 }
@@ -391,7 +387,7 @@ fun intToRussian(x: Int, code: Int): MutableList<String> {
 fun russian(n: Int): String {
     val thousand = n / 1000
     val one = n % 1000
-    val answer = (intToRussian(thousand, 2) + intToRussian(one, 1)).filter { it != "*" }
+    val answer = (intToRussian(thousand, 2) + intToRussian(one, 1)).filter { it != "" }
     return answer.joinToString(separator = " ")
 }
 
