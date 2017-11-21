@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.isPrime
 import java.lang.Math.*
 
 /**
@@ -180,7 +181,7 @@ fun polynom(p: List<Double>, x: Double): Double {
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
     if (list.isEmpty()) return list
     var sum = list[0]
-    for(i in 1..list.lastIndex){
+    for (i in 1..list.lastIndex) {
         sum += list[i]
         list[i] = sum
     }
@@ -195,16 +196,24 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var divisor = 2
-    var x = n
-    val list = mutableListOf<Int>()
-    while (x > 1) {
-        if (x % divisor == 0) {
-            x /= divisor
-            list.add(divisor)
-        } else divisor++
+    val answer = mutableListOf<Int>()
+    if(isPrime(n)) {
+        answer.add(n)
+        return  answer
     }
-    return list
+    var number = n
+    while (number >=2){
+        for (i in 2 .. n/2) {
+            if (isPrime(i)){
+                if (number % i == 0){
+                    answer.add(i)
+                    number /= i
+                    break
+                }
+            }
+        }
+    }
+    return answer
 }
 
 /**
