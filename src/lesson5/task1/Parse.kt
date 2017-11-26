@@ -166,7 +166,7 @@ fun bestHighJump(jumps: String): Int {
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int  {
+fun plusMinus(expression: String): Int {
     if (!expression.matches(Regex("""(\d+ [+-] )*(\d+)""")))
         throw IllegalArgumentException("Неверный формат строки")
     val enter = expression.split(" ")
