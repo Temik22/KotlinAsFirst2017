@@ -179,11 +179,8 @@ fun polynom(p: List<Double>, x: Double): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    if (list.isEmpty()) return list
-    var sum = list[0]
     for (i in 1..list.lastIndex) {
-        sum += list[i]
-        list[i] = sum
+        list[i] += list[i - 1]
     }
     return list
 }
@@ -197,19 +194,17 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  */
 fun factorize(n: Int): List<Int> {
     val answer = mutableListOf<Int>()
-    if(isPrime(n)) {
+    if (isPrime(n)) {
         answer.add(n)
-        return  answer
+        return answer
     }
     var number = n
-    while (number >=2){
-        for (i in 2 .. n/2) {
-            if (isPrime(i)){
-                if (number % i == 0){
-                    answer.add(i)
-                    number /= i
-                    break
-                }
+    while (number >= 2) {
+        for (i in 2..n / 2) {
+            if (number % i == 0) {
+                answer.add(i)
+                number /= i
+                break
             }
         }
     }
