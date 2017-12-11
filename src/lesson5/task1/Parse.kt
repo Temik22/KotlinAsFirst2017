@@ -108,9 +108,14 @@ fun dateDigitToStr(digital: String): String {
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String = when {
-    Regex("""[-)( ]""").replace(phone, "").contains(Regex("""[^1234567890+]""")) -> ""
-    else -> Regex("""[-() ]""").replace(phone, "")
+fun flattenPhoneNumber(phone: String): String{
+    val rightPhoneFormat = Regex("""[-)( ]""").replace(phone, "")
+    val notPhone = rightPhoneFormat.contains(Regex("""([^0-9+])"""))
+    val badSymbols = rightPhoneFormat.contains(Regex("""([0-9])"""))
+    if (notPhone || !badSymbols)
+        return ""
+    else
+        return rightPhoneFormat
 }
 
 /**
@@ -124,8 +129,8 @@ fun flattenPhoneNumber(phone: String): String = when {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    if (jumps.contains(Regex("""[^\s%\d-]""")) ||
-            Regex("""\d+""").find(jumps) == null)
+    val badSymbols = jumps.contains(Regex("""[^\s%\d-]"""))
+    if (badSymbols || Regex("""\d+""").find(jumps) == null)
         return -1
     val jumps2 = Regex("""[\-%]""").replace(jumps, "")
     var max = Regex("""\d+""").find(jumps2)!!.value.toInt()

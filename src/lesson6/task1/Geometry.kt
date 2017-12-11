@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson1.task1.sqr
+import java.lang.Math.*
 
 /**
  * Точка на плоскости
@@ -13,7 +14,7 @@ data class Point(val x: Double, val y: Double) {
      *
      * Рассчитать (по известной формуле) расстояние между двумя точками
      */
-    fun distance(other: Point): Double = Math.sqrt(sqr(x - other.x) + sqr(y - other.y))
+    fun distance(other: Point): Double = sqrt(sqr(x - other.x) + sqr(y - other.y))
 }
 
 /**
@@ -42,7 +43,7 @@ class Triangle private constructor(private val points: Set<Point>) {
      */
     fun area(): Double {
         val p = halfPerimeter()
-        return Math.sqrt(p * (p - a.distance(b)) * (p - b.distance(c)) * (p - c.distance(a)))
+        return sqrt(p * (p - a.distance(b)) * (p - b.distance(c)) * (p - c.distance(a)))
     }
 
     /**
@@ -88,7 +89,7 @@ data class Circle(val center: Point, val radius: Double) {
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
     fun contains(p: Point): Boolean = when {
-        Point(center.x, center.y).distance(p) < radius -> true
+        Point(center.x, center.y).distance(p) <= radius -> true
         else -> false
     }
 }
@@ -113,17 +114,17 @@ data class Segment(val begin: Point, val end: Point) {
  */
 fun diameter(vararg points: Point): Segment {
     var max = 0.0
-    var twoMaxes = Pair(points[0], points[1])
+    var pairOfMax = Pair(points[0], points[1])
     for (i in 0..points.lastIndex) {
         for (j in 0..points.lastIndex) {
             val distance = points[i].distance(points[j])
             if (max < distance) {
                 max = distance
-                twoMaxes = Pair(points[i], points[j])
+                pairOfMax = Pair(points[i], points[j])
             }
         }
     }
-    return Segment(twoMaxes.first, twoMaxes.second)
+    return Segment(pairOfMax.first, pairOfMax.second)
 }
 
 /**
@@ -147,10 +148,10 @@ fun circleByDiameter(diameter: Segment): Circle {
  */
 class Line private constructor(val b: Double, val angle: Double) {
     init {
-        assert(angle >= 0 && angle < Math.PI) { "Incorrect line angle: $angle" }
+        assert(angle >= 0 && angle < PI) { "Incorrect line angle: $angle" }
     }
 
-    constructor(point: Point, angle: Double) : this(point.y * Math.cos(angle) - point.x * Math.sin(angle), angle)
+    constructor(point: Point, angle: Double) : this(point.y * cos(angle) - point.x * sin(angle), angle)
 
     /**
      * Средняя
@@ -158,7 +159,17 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Найти точку пересечения с другой линией.
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
-    fun crossPoint(other: Line): Point = TODO()
+    fun crossPoint(other: Line): Point {
+        val lastHalf1 = b / cos(angle)
+        val lastHalf2 = other.b / cos(other.angle)
+        val tan1 = tan(angle)
+        val tan2 = tan(other.angle)
+        //коэфф
+        val x = (lastHalf2 - lastHalf1) / (tan1 - tan2)
+        //y = x * sin(angle)/cos(angle) + b/cos(angle)
+        val y = x * tan2 + lastHalf2
+        return Point(x, y)
+    }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
 
@@ -168,7 +179,7 @@ class Line private constructor(val b: Double, val angle: Double) {
         return result
     }
 
-    override fun toString() = "Line(${Math.cos(angle)} * y = ${Math.sin(angle)} * x + $b)"
+    override fun toString() = "Line(${cos(angle)} * y = ${sin(angle)} * x + $b)"
 }
 
 /**
@@ -176,21 +187,45 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line = TODO()
+fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
 
 /**
  * Средняя
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = TODO()
+fun lineByPoints(a: Point, b: Point): Line {
+    val tan = (a.y - b.y) / (a.x - b.x)
+    var angle = atan(tan)
+    if (angle > PI) angle -= PI
+    if (angle < 0.0) angle += PI
+    return Line(a, angle)
+}
 
 /**
  * Сложная
  *
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
-fun bisectorByPoints(a: Point, b: Point): Line = TODO()
+fun bisectorByPoints(a: Point, b: Point): Line {
+    val line = lineByPoints(a, b)
+    var angle = PI / 2 + line.angle
+    if (angle >= PI) angle -= PI
+    if (angle < 0.0) angle += PI
+    val point = middlePoint(a, b)
+    return Line(point, angle)
+}
+
+/**
+ * Вспомогательная
+ *
+ * Возвращает середину отрезка
+ */
+fun middlePoint(begin: Point, end: Point): Point {
+    val x = (begin.x + end.x) / 2
+    val y = (begin.y + end.y) / 2
+    return Point(x, y)
+}
 
 /**
  * Средняя

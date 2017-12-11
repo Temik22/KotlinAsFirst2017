@@ -37,13 +37,9 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square {
-    val e = "abcdefgh"
-    val square = Square(e.indexOf(notation[0])+1, notation[1].toInt()-48)
-    if (notation.contains(Regex("""((?<!.)[abcdefgh][1-8])(?!.)""")))
-        return square
-    else{
-        throw IllegalArgumentException()
-    }
+    if (notation.matches(Regex("""((?<!.)[abcdefgh][1-8])(?!.)""")))
+        return Square((notation[0].toInt() - 96), (notation[1] - 48).toInt())
+    else throw IllegalArgumentException()
 }
 
 /**
