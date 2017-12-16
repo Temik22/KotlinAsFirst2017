@@ -68,7 +68,7 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
     val date = str.split(" ")
-    if (!str.matches(Regex("""(([1-9]|[1-2][0-9]|3[0-1]) [а-я]+ \d+)""")) || date[1] !in months) return ""
+    if (!str.matches(Regex("""(([1-9]|0[1-9]|[1-2][0-9]|3[0-1]) [а-я]+ \d+)""")) || date[1] !in months) return ""
     val day = twoDigitStr(date[0].toInt())
     val month = twoDigitStr(months.indexOf(date[1]) + 1)
     val year = date[2]
