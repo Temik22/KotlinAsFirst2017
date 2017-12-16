@@ -68,8 +68,11 @@ fun main(args: Array<String>) {
  */
 fun dateStrToDigit(str: String): String {
     val date = str.split(" ")
-    if (!str.matches(Regex("""\d?\d [а-я]+ \d+""")) || date[1] !in months) return ""
-    return String.format("%02d.%02d.%s", date[0].toInt(), months.indexOf(date[1]) + 1, date[2])
+    if (!str.matches(Regex("""(([1-9]|[1-2][0-9]|3[0-1]) [а-я]+ \d+)""")) || date[1] !in months) return ""
+    val day = twoDigitStr(date[0].toInt())
+    val month = twoDigitStr(months.indexOf(date[1]) + 1)
+    val year = date[2]
+    return "$day.$month.$year"
 }
 
 
@@ -79,7 +82,7 @@ fun dateStrToDigit(str: String): String {
  */
 
 val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня", "июля",
-        " августа", "сентября", "октября", "ноября", "декабря")
+        "августа", "сентября", "октября", "ноября", "декабря")
 
 /**
  * Средняя
@@ -152,7 +155,7 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (jumps.contains(Regex("""[^ %\d-+]"""))) return -1
+    if (jumps.contains(Regex("""[^ %\d-+]""")) || jumps == "") return -1
     val jumps2 = Regex("""[%]""").replace(jumps, "")
     var max = 0
     for (it in Regex("""\d+(?= \+)""").findAll(jumps2)) {
@@ -212,7 +215,23 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть положительными
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (!description.matches(Regex("""(.* \d+(\.\d+)?; )*(.* \d+(\.\d+)?)""")))
+        return ""
+    val productWithCost = description.split("; ")
+    var answer = ""
+    var maxCost = 0.0
+    for (element in productWithCost) {
+        val findResult = Regex("""(.*) (\d+(\.\d+)?)""").find(element)!!.groupValues
+        val productName = findResult[1]
+        val cost = findResult[2].toDouble()
+        if (cost >= maxCost) {
+            maxCost = cost
+            answer = productName
+        }
+    }
+    return answer
+}
 
 /**
  * Сложная
