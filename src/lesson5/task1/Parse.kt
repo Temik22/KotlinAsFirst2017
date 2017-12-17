@@ -132,12 +132,13 @@ fun flattenPhoneNumber(phone: String): String{
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val badSymbols = jumps.contains(Regex("""[^\s%\d-]"""))
-    if (badSymbols || Regex("""\d+""").find(jumps) == null)
+    val badSymbols = jumps.contains(Regex("""[^\d\+ \-%]"""))
+    if (badSymbols || !Regex("""\d+""").containsMatchIn(jumps) ||
+            !Regex("""\+""").containsMatchIn(jumps))
         return -1
     val jumps2 = Regex("""[\-%]""").replace(jumps, "")
     var max = Regex("""\d+""").find(jumps2)!!.value.toInt()
-    for (it in Regex("""(?<=\s)\d+""").findAll(jumps2)) {
+    for (it in Regex("""\d+(?= \+)""").findAll(jumps2)) {
         if (max < it.value.toInt())
             max = it.value.toInt()
     }
@@ -244,7 +245,48 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    val badFormat =
+            roman.contains(Regex("""([^IVXLCDM])|(?<=[C])CD|(?<=[X])XC|(?<=[X])XL|(?<=[I])IX|(?<=[I])IV"""))
+    if (badFormat || roman.isEmpty())
+        return -1
+
+    var number = Regex("""(?<!C)M""").findAll(roman, 0).count() * 1000
+
+    var roman2 = roman.substring(number/1000, roman.length)
+
+    while (Regex("""IV|IX|XL|XC|CD|CM""").find(roman2) != null) {
+
+        val answer = Regex("""IV|IX|XL|XC|CD|CM""").find(roman2)
+
+        when (answer!!.value) {
+            "CM" -> number += 900
+            "CD" -> number += 400
+            "XC" -> number += 90
+            "XL" -> number += 40
+            "IX" -> number += 9
+            "IV" -> number += 4
+        }
+        roman2 = roman2.removeRange(answer.range)
+    }
+    while (roman2.isNotEmpty()) {
+
+        val answer =
+                Regex("""[VLDIXC]""").
+                        find(roman2)
+
+        when(answer!!.value) {
+            "V" -> number += 5
+            "L" -> number += 50
+            "D" -> number += 500
+            "C" -> number += 100
+            "X" -> number += 10
+            "I" -> number += 1
+        }
+        roman2 = roman2.removeRange(answer.range)
+    }
+    return number
+}
 
 /**
  * Очень сложная

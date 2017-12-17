@@ -233,7 +233,25 @@ fun middlePoint(begin: Point, end: Point): Point {
  * Задан список из n окружностей на плоскости. Найти пару наименее удалённых из них.
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
-fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
+fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
+    if (circles.size < 2)
+        throw  IllegalArgumentException()
+    var min = circles[0].distance(circles[1])
+    var pairOfMin = Pair(circles[0], circles[1])
+    for (i in 0..circles.lastIndex) {
+        for (j in 0..circles.lastIndex) {
+            val distance = circles[i].distance(circles[j])
+            if (i != j) {
+                if (distance < min) {
+                    pairOfMin = Pair(circles[i], circles[j])
+                    min = distance
+                }
+            }
+        }
+    }
+    return pairOfMin
+}
+
 
 /**
  * Сложная
@@ -244,7 +262,12 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
+    val perpendicular1 = bisectorByPoints(a, b)
+    val perpendicular2 = bisectorByPoints(b, c)
+    val center = perpendicular1.crossPoint(perpendicular2)
+    return Circle(center, center.distance(b))
+}
 
 /**
  * Очень сложная
