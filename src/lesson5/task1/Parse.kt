@@ -67,12 +67,9 @@ fun main(args: Array<String>) {
  * При неверном формате входной строки вернуть пустую строку
  */
 fun dateStrToDigit(str: String): String {
-    val date = str.split(" ")
-    if (!str.matches(Regex("""(([1-9]|0[1-9]|[1-2][0-9]|3[0-1]) [а-я]+ \d+)""")) || date[1] !in months) return ""
-    val day = twoDigitStr(date[0].toInt())
-    val month = twoDigitStr(months.indexOf(date[1]) + 1)
-    val year = date[2]
-    return "$day.$month.$year"
+    val list = str.split(" ")
+    if (!str.matches(Regex("""\d?\d [а-я]+ \d+""")) || list[1] !in months) return ""
+    return String.format("%02d.%02d.%s", list[0].toInt(), months.indexOf(list[1]) + 1, list[2])
 }
 
 
@@ -111,7 +108,7 @@ fun dateDigitToStr(digital: String): String {
  * Все символы в номере, кроме цифр, пробелов и +-(), считать недопустимыми.
  * При неверном формате вернуть пустую строку
  */
-fun flattenPhoneNumber(phone: String): String{
+fun flattenPhoneNumber(phone: String): String {
     val rightPhoneFormat = Regex("""[-)( ]""").replace(phone, "")
     val notPhone = rightPhoneFormat.contains(Regex("""([^0-9+])"""))
     val badSymbols = rightPhoneFormat.contains(Regex("""([0-9])"""))
@@ -132,13 +129,11 @@ fun flattenPhoneNumber(phone: String): String{
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    val badSymbols = jumps.contains(Regex("""[^\d\+ \-%]"""))
-    if (badSymbols || !Regex("""\d+""").containsMatchIn(jumps) ||
-            !Regex("""\+""").containsMatchIn(jumps))
+    val badSymbols = jumps.contains(Regex("""[^\d \-%]"""))
+    if (badSymbols || !Regex("""\d+""").containsMatchIn(jumps))
         return -1
-    val jumps2 = Regex("""[\-%]""").replace(jumps, "")
-    var max = Regex("""\d+""").find(jumps2)!!.value.toInt()
-    for (it in Regex("""\d+(?= \+)""").findAll(jumps2)) {
+    var max = Regex("""\d+""").find(jumps)!!.value.toInt()
+    for (it in Regex("""\d+""").findAll(jumps)) {
         if (max < it.value.toInt())
             max = it.value.toInt()
     }
@@ -156,10 +151,10 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (jumps.contains(Regex("""[^ %\d-+]""")) || jumps == "") return -1
-    val jumps2 = Regex("""[%]""").replace(jumps, "")
+    if (jumps.contains(Regex("""[^ %\d-+]""")) || jumps == ""
+            || !Regex("""\d+(?= \+)""").containsMatchIn(jumps)) return -1
     var max = 0
-    for (it in Regex("""\d+(?= \+)""").findAll(jumps2)) {
+    for (it in Regex("""\d+(?= \+)""").findAll(jumps)) {
         if (max < it.value.toInt())
             max = it.value.toInt()
     }
@@ -217,21 +212,25 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть положительными
  */
 fun mostExpensive(description: String): String {
-    if (!description.matches(Regex("""(.* \d+(\.\d+)?; )*(.* \d+(\.\d+)?)""")))
-        return ""
-    val productWithCost = description.split("; ")
+    val products = description.split("; ")
     var answer = ""
-    var maxCost = 0.0
-    for (element in productWithCost) {
-        val findResult = Regex("""(.*) (\d+(\.\d+)?)""").find(element)!!.groupValues
-        val productName = findResult[1]
-        val cost = findResult[2].toDouble()
-        if (cost >= maxCost) {
-            maxCost = cost
-            answer = productName
+    var maxPrice = 0.0
+    try {
+        for (it in products) {
+            val productWithCost = it.split(' ')
+            if (productWithCost.size != 2) return ""
+            val price = productWithCost[1].toDouble()
+            if (price < 0) return ""
+            if (price >= maxPrice) {
+                maxPrice = price
+                answer = productWithCost[0]
+            }
+
         }
+        return answer
+    } catch (e: NumberFormatException) {
+        return ""
     }
-    return answer
 }
 
 /**
@@ -253,7 +252,7 @@ fun fromRoman(roman: String): Int {
 
     var number = Regex("""(?<!C)M""").findAll(roman, 0).count() * 1000
 
-    var roman2 = roman.substring(number/1000, roman.length)
+    var roman2 = roman.substring(number / 1000, roman.length)
 
     while (Regex("""IV|IX|XL|XC|CD|CM""").find(roman2) != null) {
 
@@ -275,7 +274,7 @@ fun fromRoman(roman: String): Int {
                 Regex("""[VLDIXC]""").
                         find(roman2)
 
-        when(answer!!.value) {
+        when (answer!!.value) {
             "V" -> number += 5
             "L" -> number += 50
             "D" -> number += 500
